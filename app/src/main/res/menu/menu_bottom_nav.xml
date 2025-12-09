@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 首页：视频流 -->
+    <item
+        android:id="@+id/nav_video"
+        android:title="首页" />
+
+    <!-- 好友：关注列表/通讯录 -->
+    <item
+        android:id="@+id/nav_contacts"
+        android:title="好友" />
+
+    <!-- 我的：个人中心 -->
+    <item
+        android:id="@+id/nav_profile"
+        android:title="我的" />
+</menu>
