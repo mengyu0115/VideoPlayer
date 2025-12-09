@@ -22,30 +22,30 @@ private const val TAG = "ImmersiveUIUtil"
  * - 使用 WindowInsetsController 控制图标颜色
  */
 fun Activity.setupImmersiveUI() {
-    Log.d(TAG, "setupImmersiveUI: 开始设置沉浸式 UI")
-    Log.d(TAG, "setupImmersiveUI: Android SDK 版本: ${Build.VERSION.SDK_INT}")
+//    Log.d(TAG, "setupImmersiveUI: 开始设置沉浸式 UI")
+//    Log.d(TAG, "setupImmersiveUI: Android SDK 版本: ${Build.VERSION.SDK_INT}")
 
-    // ✅ 启用 Edge-to-Edge 模式（适配 Android 15+）
+    // 启用 Edge-to-Edge 模式（适配 Android 15+）
     // 允许内容延伸到系统栏（状态栏和导航栏）下方
     // 系统会自动将状态栏和导航栏设为透明
-    Log.d(TAG, "setupImmersiveUI: 启用 Edge-to-Edge 模式")
+//    Log.d(TAG, "setupImmersiveUI: 启用 Edge-to-Edge 模式")
     WindowCompat.setDecorFitsSystemWindows(window, false)
 
     // 获取 WindowInsetsController 控制系统栏图标颜色
-    Log.d(TAG, "setupImmersiveUI: 获取 WindowInsetsController")
+//    Log.d(TAG, "setupImmersiveUI: 获取 WindowInsetsController")
     val insetsController = WindowCompat.getInsetsController(window, window.decorView)
 
     // 设置状态栏和导航栏为深色图标模式（浅色文字/按钮）
     // 适合深色背景的应用（如视频播放器）
     insetsController.apply {
-        Log.d(TAG, "setupImmersiveUI: 设置状态栏为深色图标模式（浅色文字）")
+//        Log.d(TAG, "setupImmersiveUI: 设置状态栏为深色图标模式（浅色文字）")
         // isAppearanceLightStatusBars = false 表示使用浅色内容（白色文字和图标）
         isAppearanceLightStatusBars = false
 
-        Log.d(TAG, "setupImmersiveUI: 设置导航栏为深色图标模式（浅色按钮）")
+//        Log.d(TAG, "setupImmersiveUI: 设置导航栏为深色图标模式（浅色按钮）")
         // isAppearanceLightNavigationBars = false 表示导航栏使用浅色内容
         isAppearanceLightNavigationBars = false
     }
 
-    Log.d(TAG, "setupImmersiveUI: ✅ Edge-to-Edge 沉浸式 UI 设置完成")
+//    Log.d(TAG, "setupImmersiveUI: ✅ Edge-to-Edge 沉浸式 UI 设置完成")
 }

@@ -10,7 +10,7 @@ import androidx.room.PrimaryKey
  * Room 数据库表结构，用于数据持久化
  * 实现离线模式和状态保存
  *
- * ⚠️ 迭代13架构变更：
+ *  迭代13架构变更：
  * - isLiked 和 isFavorite 不再存储到数据库（@Ignore 标记）
  * - 这些状态在运行时通过关联表（video_likes）动态查询组装
  * - 实现多用户数据隔离
@@ -37,14 +37,14 @@ data class VideoEntity(
     val title: String,
     val videoUrl: String,
     val coverUrl: String,
-    val authorId: String,            // ✅ 新增：作者 ID
-    val authorName: String,          // 发布者昵称（TikTok UI）
-    val authorAvatarUrl: String,     // 用户头像 URL（TikTok UI）
-    val description: String,          // 视频文案（TikTok UI）
-    val likeCount: Int,              // 点赞数（TikTok UI）
-    val commentCount: Int,           // 评论数（TikTok UI）
+    val authorId: String,            // 作者 ID
+    val authorName: String,          // 发布者昵称
+    val authorAvatarUrl: String,     // 用户头像 URL
+    val description: String,          // 视频文案
+    val likeCount: Int,              // 点赞数
+    val commentCount: Int,           // 评论数
 
-    // ⚠️ 迭代13：这些字段不存储到数据库，由 Repository 层运行时组装
+    //  迭代13：这些字段不存储到数据库，由 Repository 层运行时组装
     @Ignore
     val isMine: Boolean = false,     // 是否是我发布的视频（运行时计算 authorId == currentUserId）
     @Ignore

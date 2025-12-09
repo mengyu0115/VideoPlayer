@@ -97,7 +97,7 @@ class ChatActivity : AppCompatActivity() {
      * 配置消息列表
      */
     private fun setupRecyclerView() {
-        // ✅ Bug修复：传入当前用户ID，用于判断消息的左右显示
+        //  传入当前用户ID，用于判断消息的左右显示
         val currentUserId = com.example.videoplayer.utils.SessionManager
             .getInstance(this)
             .currentUserId

@@ -121,11 +121,7 @@
                     android:inputType="textPassword"
                     android:maxLines="1" />
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@android:drawable/ic_menu_view"
-                    android:tint="#CCCCCC" />
+
 
             </LinearLayout>
 

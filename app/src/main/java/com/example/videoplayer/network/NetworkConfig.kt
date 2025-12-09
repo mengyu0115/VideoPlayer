@@ -49,3 +49,4 @@ object NetworkConfig {
         return "https://picsum.photos/seed/$seed/1080/1920"
     }
 }
+

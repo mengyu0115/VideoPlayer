@@ -30,7 +30,7 @@ import org.json.JSONObject
  * - 管理数据缓存和刷新策略
  * - 处理社交互动（点赞、评论、关注）
  *
- * ⚠️ 迭代13架构变更：
+ *  迭代13架构变更：
  * - 运行时组装用户状态（isLiked、isFavorite）
  * - 通过关联表实现多用户数据隔离
  * - 使用 SessionManager 获取当前用户ID
@@ -50,10 +50,10 @@ class VideoRepository(context: Context) {
     private val videoDao: VideoDao = database.videoDao()
     private val commentDao: CommentDao = database.commentDao()
     private val userDao: UserDao = database.userDao()
-    private val videoLikeDao: VideoLikeDao = database.videoLikeDao()  // ✅ 迭代13
-    private val userFollowDao: UserFollowDao = database.userFollowDao()  // ✅ 迭代13
-    private val messageDao = database.messageDao()  // ✅ Bug修复：聊天消息支持
-    private val sessionManager = SessionManager.getInstance(context)  // ✅ 迭代13
+    private val videoLikeDao: VideoLikeDao = database.videoLikeDao()
+    private val userFollowDao: UserFollowDao = database.userFollowDao()
+    private val messageDao = database.messageDao()
+    private val sessionManager = SessionManager.getInstance(context)
 
     /**
      * 所有视频的 Flow 流（迭代13重构）
@@ -66,7 +66,7 @@ class VideoRepository(context: Context) {
     val allVideos: Flow<List<VideoEntity>> = videoDao.getAllVideos()
         .map { videos ->
             Log.d(TAG, "allVideos.map: 收到 ${videos.size} 个视频，开始组装用户状态")
-            attachUserStates(videos)
+            attachUserStates(videos)//运行时为每个视频组装用户状态（isLiked、isFavorite）
         }
 
     /**
@@ -92,7 +92,7 @@ class VideoRepository(context: Context) {
             // 收藏功能暂时复用点赞表（后续可扩展为独立的 VideoFavorite 表）
             val isFavorite = video.isFavorite  // 暂时保留原值
 
-            // ✅ 计算该视频是否是当前用户发布的（多用户数据隔离）
+            //  计算该视频是否是当前用户发布的（多用户数据隔离）
             val isMine = (video.authorId == currentUserId)
 
             Log.v(TAG, "attachUserStates: video=${video.id}, authorId=${video.authorId}, isLiked=$isLiked, isMine=$isMine")
@@ -101,7 +101,7 @@ class VideoRepository(context: Context) {
             video.copy(
                 isLiked = isLiked,
                 isFavorite = isFavorite,
-                isMine = isMine  // ✅ 运行时计算的 isMine 状态
+                isMine = isMine  //  运行时计算的 isMine 状态
             )
         }
     }
@@ -138,7 +138,7 @@ class VideoRepository(context: Context) {
                 Log.d(TAG, "refreshVideos: 视频已存在，跳过 - id=${video.id}, isLiked=${existingVideo.isLiked}, likeCount=${existingVideo.likeCount}")
             }
         }
-        Log.d(TAG, "refreshVideos: ✅ 插入了 $insertedCount 个新视频，已保留用户交互数据")
+        Log.d(TAG, "refreshVideos:  插入了 $insertedCount 个新视频，已保留用户交互数据")
     }
 
     /**
@@ -179,19 +179,19 @@ class VideoRepository(context: Context) {
                         // 视频不存在，插入新视频
                         videoDao.insertVideo(videoEntity)
                         syncedCount++
-                        Log.d(TAG, "syncVideosFromServer: ✅ 同步新视频 - id=${videoEntity.id}, title=${videoEntity.title}")
+                        Log.d(TAG, "syncVideosFromServer:  同步新视频 - id=${videoEntity.id}, title=${videoEntity.title}")
                     } else {
                         Log.d(TAG, "syncVideosFromServer: 视频已存在，跳过 - id=${videoEntity.id}")
                     }
                 } catch (e: Exception) {
-                    Log.e(TAG, "syncVideosFromServer: ❌ 解析视频失败", e)
+                    Log.e(TAG, "syncVideosFromServer:  解析视频失败", e)
                 }
             }
 
-            Log.d(TAG, "syncVideosFromServer: ✅ 同步完成，新增 $syncedCount 个视频")
+            Log.d(TAG, "syncVideosFromServer:  同步完成，新增 $syncedCount 个视频")
 
         } catch (e: Exception) {
-            Log.e(TAG, "syncVideosFromServer: ❌ 同步失败", e)
+            Log.e(TAG, "syncVideosFromServer:  同步失败", e)
             // 不抛出异常，允许应用继续运行（使用本地数据）
         }
     }
@@ -218,7 +218,7 @@ class VideoRepository(context: Context) {
     }
 
     /**
-     * 切换点赞���态（迭代13重构）
+     * 切换点赞状态（迭代13重构）
      *
      * 架构变更：
      * - 不再直接更新 VideoEntity 的 isLiked 字段
@@ -240,11 +240,11 @@ class VideoRepository(context: Context) {
                 timestamp = System.currentTimeMillis()
             )
             videoLikeDao.insertLike(likeEntity)
-            Log.d(TAG, "toggleLike: ✅ 添加点赞记录")
+            Log.d(TAG, "toggleLike:  添加点赞记录")
         } else {
             // 删除点赞记录
             videoLikeDao.deleteLike(currentUserId, videoId)
-            Log.d(TAG, "toggleLike: ✅ 删除点赞记录")
+            Log.d(TAG, "toggleLike:  删除点赞记录")
         }
 
         // 更新视频的点赞数（+1 或 -1）
@@ -256,7 +256,7 @@ class VideoRepository(context: Context) {
                 (currentVideo.likeCount - 1).coerceAtLeast(0)  // 确保不小于0
             }
             videoDao.updateLikeCount(videoId, newLikeCount)
-            Log.d(TAG, "toggleLike: ✅ 点赞数已更新为 $newLikeCount")
+            Log.d(TAG, "toggleLike:  点赞数已更新为 $newLikeCount")
         }
     }
 
@@ -276,7 +276,7 @@ class VideoRepository(context: Context) {
 
         // 暂时保留原有实现
         videoDao.updateFavoriteStatus(videoId, isFavorite)
-        Log.d(TAG, "toggleFavorite: ✅ 收藏状态已更新")
+        Log.d(TAG, "toggleFavorite:  收藏状态已更新")
     }
 
     /**
@@ -289,7 +289,7 @@ class VideoRepository(context: Context) {
         return videoDao.getFavoriteVideos()
     }
 
-    /**
+    /**已弃用
      * 生成测试视频数据
      *
      * 模拟网络 API 返回的数据
@@ -383,7 +383,7 @@ class VideoRepository(context: Context) {
 
         Log.d(TAG, "generateTestVideos: 准备了 ${testVideoData.size} 个测试视频")
 
-        // ✅ Bug修复：使用真实的聊天用户ID作为视频作者
+        //  Bug修复：使用真实的聊天用户ID作为视频作者
         val realUserIds = listOf("user1", "user2", "admin")
 
         val testVideos = testVideoData.mapIndexed { index, videoData ->
@@ -395,15 +395,15 @@ class VideoRepository(context: Context) {
                 title = "视频 ${index + 1} [${videoData.orientation} ${videoData.aspectRatio}]",
                 coverUrl = "https://picsum.photos/seed/${index}/1080/1920",
                 videoUrl = videoData.url,
-                authorId = authorId,  // ✅ 使用真实聊天用户ID
-                authorName = authorId,  // ✅ 显示真实用户名（不带@前缀）
+                authorId = authorId,  //  使用真实聊天用户ID
+                authorName = authorId,  //  显示真实用户名（不带@前缀）
                 authorAvatarUrl = getUserAvatarUrl(index),
                 description = getDescription(index, videoData.note),
-                likeCount = 0,  // ✅ 初始点赞数为 0，真实点赞才增加
-                commentCount = 0,  // ✅ 初始评论数为 0，真实评论才增加
+                likeCount = 0,  //  初始点赞数为 0，真实点赞才增加
+                commentCount = 0,  //  初始评论数为 0，真实评论才增加
                 isLiked = false,  // 默认未点赞
                 isFavorite = false,  // 默认未收藏
-                isMine = false  // ✅ 旧测试数据默认不是"我的"视频
+                isMine = false  //  旧测试数据默认不是"我的"视频
             ).also { video ->
                 Log.d(TAG, "generateTestVideos: 创建视频[${video.id}]")
                 Log.d(TAG, "generateTestVideos:   title=${video.title}")
@@ -418,7 +418,7 @@ class VideoRepository(context: Context) {
         return testVideos
     }
 
-    /**
+    /**已弃用
      * 生成用户昵称（模拟数据）
      */
     private fun getUserName(index: Int): String {
@@ -430,7 +430,7 @@ class VideoRepository(context: Context) {
         return names[index % names.size]
     }
 
-    /**
+    /**已弃用
      * 生成视频描述（模拟数据）
      */
     private fun getDescription(index: Int, note: String): String {
@@ -449,21 +449,21 @@ class VideoRepository(context: Context) {
         return descriptions[index % descriptions.size]
     }
 
-    /**
+    /**已弃用
      * 生成点赞数（模拟数据）
      */
     private fun getLikeCount(index: Int): Int {
         return (1000 + index * 5678) % 100000
     }
 
-    /**
+    /**已弃用
      * 生成评论数（模拟数据）
      */
     private fun getCommentCount(index: Int): Int {
         return getLikeCount(index) / 10 + (index * 123) % 1000
     }
 
-    /**
+    /**已弃用
      * 生成用户头像 URL（模拟数据）
      */
     private fun getUserAvatarUrl(index: Int): String {
@@ -500,13 +500,13 @@ class VideoRepository(context: Context) {
         content: String,
         userName: String = "我",  // 默认当前用户
         avatarUrl: String = "https://picsum.photos/seed/currentUser/200/200",
-        userId: String = "u_me"  // ✅ 迭代13：默认当前用户ID
+        userId: String = "u_me"  //  迭代13：默认当前用户ID
     ) {
         Log.d(TAG, "sendComment: videoId=$videoId, content=$content, userId=$userId")
 
         val comment = CommentEntity(
             videoId = videoId,
-            userId = userId,  // ✅ 迭代13：添加userId字段
+            userId = userId,  //  迭代13：添加userId字段
             content = content,
             userName = userName,
             avatarUrl = avatarUrl,
@@ -514,14 +514,14 @@ class VideoRepository(context: Context) {
         )
 
         commentDao.insertComment(comment)
-        Log.d(TAG, "sendComment: ✅ 评论已插入数据库")
+        Log.d(TAG, "sendComment:  评论已插入数据库")
 
         // 更新视频的评论数（+1）
         val currentVideo = videoDao.getVideoById(videoId)
         if (currentVideo != null) {
             val newCommentCount = currentVideo.commentCount + 1
             videoDao.updateCommentCount(videoId, newCommentCount)
-            Log.d(TAG, "sendComment: ✅ 评论数已更新为 $newCommentCount")
+            Log.d(TAG, "sendComment:  评论数已更新为 $newCommentCount")
         }
     }
 
@@ -572,7 +572,7 @@ class VideoRepository(context: Context) {
         return if (isFollowing) {
             // 已关注 → 取消关注
             userFollowDao.deleteFollow(currentUserId, userId)
-            Log.d(TAG, "toggleFollow: ✅ $currentUserId 已取消关注 $userId")
+            Log.d(TAG, "toggleFollow:  $currentUserId 已取消关注 $userId")
             false
         } else {
             // 未关注 → 关注
@@ -582,7 +582,7 @@ class VideoRepository(context: Context) {
                 timestamp = System.currentTimeMillis()
             )
             userFollowDao.insertFollow(followEntity)
-            Log.d(TAG, "toggleFollow: ✅ $currentUserId 已关注 $userId")
+            Log.d(TAG, "toggleFollow:  $currentUserId 已关注 $userId")
             true
         }
     }
@@ -642,13 +642,13 @@ class VideoRepository(context: Context) {
                 )
                 userFollowDao.insertFollow(followEntity)
                 addedCount++
-                Log.d(TAG, "autoAddMessageSendersToContacts: ✅ 已自动添加联系人 $senderId")
+                Log.d(TAG, "autoAddMessageSendersToContacts:  已自动添加联系人 $senderId")
             } else {
                 Log.d(TAG, "autoAddMessageSendersToContacts: 发送者 $senderId 已在联系人列表中")
             }
         }
 
-        Log.d(TAG, "autoAddMessageSendersToContacts: ✅ 完成，新添加 $addedCount 个联系人")
+        Log.d(TAG, "autoAddMessageSendersToContacts:  完成，新添加 $addedCount 个联系人")
         return addedCount
     }
 }

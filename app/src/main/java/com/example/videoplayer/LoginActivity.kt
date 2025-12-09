@@ -12,7 +12,7 @@ import com.example.videoplayer.utils.SessionManager
 import kotlinx.coroutines.launch
 
 /**
- * 登录Activity（迭代14重构：使用 SocketManager）
+ * 登录Activity（迭代14：使用 SocketManager）
  *
  * 功能：
  * 1. 用户输入账号密码
@@ -79,10 +79,10 @@ class LoginActivity : AppCompatActivity() {
     private fun connectToServer(serverIp: String, username: String, password: String) {
         Log.d(TAG, "connectToServer: 开始连接 $serverIp, userId=$username")
 
-        // ✅ 使用协程调用 SocketManager.connect
+        //  使用协程调用 SocketManager.connect
         lifecycleScope.launch {
             try {
-                // ✅ SocketManager 使用 uid 而不是 password
+                //  SocketManager 使用 uid 而不是 password
                 val success = SocketManager.connect(serverIp, username)
 
                 runOnUiThread {
@@ -90,9 +90,9 @@ class LoginActivity : AppCompatActivity() {
                     binding.btnLogin.text = "登录"
 
                     if (success) {
-                        Log.d(TAG, "connectToServer: ✅ 登录成功")
+                        Log.d(TAG, "connectToServer: 登录成功")
 
-                        // ✅ 保存当前用户ID到SessionManager
+                        //  保存当前用户ID到SessionManager
                         SessionManager.getInstance(this@LoginActivity).setCurrentUserId(username)
 
                         Toast.makeText(this@LoginActivity, "登录成功", Toast.LENGTH_SHORT).show()
@@ -102,12 +102,12 @@ class LoginActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     } else {
-                        Log.e(TAG, "connectToServer: ❌ 登录失败")
+                        Log.e(TAG, "connectToServer: 登录失败")
                         Toast.makeText(this@LoginActivity, "登录失败，请检查服务器地址", Toast.LENGTH_LONG).show()
                     }
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "connectToServer: ❌ 连接异常", e)
+                Log.e(TAG, "connectToServer: 连接异常", e)
                 runOnUiThread {
                     binding.btnLogin.isEnabled = true
                     binding.btnLogin.text = "登录"

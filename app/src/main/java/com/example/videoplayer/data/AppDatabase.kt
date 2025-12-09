@@ -27,10 +27,10 @@ import kotlinx.coroutines.launch
         CommentEntity::class,
         UserEntity::class,
         MessageEntity::class,
-        VideoLikeEntity::class,      // ✅ 迭代13：视频点赞关联表
-        UserFollowEntity::class       // ✅ 迭代13：用户关注关联表
+        VideoLikeEntity::class,      //  迭代13：视频点赞关联表
+        UserFollowEntity::class       //  迭代13：用户关注关联表
     ],
-    version = 11,  // ✅ 升级到版本11，删除用户名@前缀
+    version = 11,  // 升级到版本11
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -78,11 +78,11 @@ abstract class AppDatabase : RoomDatabase() {
             )
                 // 破坏性迁移：版本升级时清空数据重建（开发阶段简化处理）
                 .fallbackToDestructiveMigration()
-                // ✅ 添加数据库回调，预填充数据
+                //  添加数据库回调，预填充数据
                 .addCallback(object : RoomDatabase.Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
-                        Log.d(TAG, "onCreate: 数据库创建，开始预填充数据")
+//                        Log.d(TAG, "onCreate: 数据库创建，开始预填充数据")
 
                         // 在后台线程预填充数据
                         CoroutineScope(Dispatchers.IO).launch {
@@ -92,11 +92,11 @@ abstract class AppDatabase : RoomDatabase() {
 
                     override fun onOpen(db: SupportSQLiteDatabase) {
                         super.onOpen(db)
-                        Log.d(TAG, "========================================")
-                        Log.d(TAG, "onOpen: 数据库已打开，开始检查数据")
-                        Log.d(TAG, "========================================")
+//                        Log.d(TAG, "========================================")
+//                        Log.d(TAG, "onOpen: 数据库已打开，开始检查数据")
+//                        Log.d(TAG, "========================================")
 
-                        // ✅ Bug修复：强制清空并重新填充数据（版本10专用）
+                        //  Bug修复：强制清空并重新填充数据（版本10专用）
                         // 确保所有用户ID从旧的user_v1改为新的user1
                         CoroutineScope(Dispatchers.IO).launch {
                             try {
@@ -104,47 +104,47 @@ abstract class AppDatabase : RoomDatabase() {
 
                                 // 检查是否有旧数据（user_v1等虚拟ID）
                                 val oldVideo = database.videoDao().getVideoById("v1")
-                                Log.d(TAG, "onOpen: 检查视频v1 - 存在=${oldVideo != null}")
+//                                Log.d(TAG, "onOpen: 检查视频v1 - 存在=${oldVideo != null}")
 
                                 if (oldVideo != null) {
-                                    Log.d(TAG, "onOpen: v1的authorId=${oldVideo.authorId}")
+//                                    Log.d(TAG, "onOpen: v1的authorId=${oldVideo.authorId}")
 
                                     if (oldVideo.authorId.startsWith("user_v") || oldVideo.authorId.startsWith("user_video")) {
-                                        Log.e(TAG, "========================================")
-                                        Log.e(TAG, "⚠️ 检测到旧数据（authorId=${oldVideo.authorId}）")
-                                        Log.e(TAG, "⚠️ 开始强制清空并重建数据库...")
-                                        Log.e(TAG, "========================================")
+//                                        Log.e(TAG, "========================================")
+//                                        Log.e(TAG, " 检测到旧数据（authorId=${oldVideo.authorId}）")
+//                                        Log.e(TAG, " 开始强制清空并重建数据库...")
+//                                        Log.e(TAG, "========================================")
 
                                         // 清空所有表
-                                        Log.d(TAG, "清空videos表...")
+//                                        Log.d(TAG, "清空videos表...")
                                         database.videoDao().deleteAll()
 
-                                        Log.d(TAG, "清空user_follows表...")
+//                                        Log.d(TAG, "清空user_follows表...")
                                         database.userFollowDao().deleteAll()
 
-                                        Log.d(TAG, "清空video_likes表...")
+//                                        Log.d(TAG, "清空video_likes表...")
                                         database.videoLikeDao().deleteAll()
 
-                                        Log.d(TAG, "清空comments表...")
+//                                        Log.d(TAG, "清空comments表...")
                                         database.commentDao().deleteAll()
 
-                                        Log.e(TAG, "✅ 所有表已清空，开始重新填充...")
+//                                        Log.e(TAG, "所有表已清空，开始重新填充...")
 
                                         // 重新填充
                                         populateDatabase(database)
 
-                                        Log.e(TAG, "========================================")
-                                        Log.e(TAG, "✅ 数据库重建完成！")
-                                        Log.e(TAG, "========================================")
+//                                        Log.e(TAG, "========================================")
+//                                        Log.e(TAG, " 数据库重建完成！")
+//                                        Log.e(TAG, "========================================")
                                     } else {
-                                        Log.d(TAG, "onOpen: ✅ 数据正确（authorId=${oldVideo.authorId}），跳过清理")
+//                                        Log.d(TAG, "onOpen:  数据正确（authorId=${oldVideo.authorId}），跳过清理")
                                     }
                                 } else {
-                                    Log.d(TAG, "onOpen: 数据库为空，开始预填充数据")
+//                                    Log.d(TAG, "onOpen: 数据库为空，开始预填充数据")
                                     populateDatabase(database)
                                 }
                             } catch (e: Exception) {
-                                Log.e(TAG, "onOpen: ❌ 数据检查失败", e)
+//                                Log.e(TAG, "onOpen:  数据检查失败", e)
                             }
                         }
                     }
@@ -156,12 +156,12 @@ abstract class AppDatabase : RoomDatabase() {
          * 预填充数据库
          *
          * 在数据库首次创建时调用，插入初始的测试视频
-         * ⚠️ 不再预先创建用户，用户通过注册功能创建
+         *  不再预先创建用户，用户通过注册功能创建
          *
          * @param database 数据库实例
          */
         private suspend fun populateDatabase(database: AppDatabase) {
-            Log.d(TAG, "populateDatabase: 开始预填充数据")
+//            Log.d(TAG, "populateDatabase: 开始预填充数据")
 
             val videoDao = database.videoDao()
 
@@ -176,19 +176,19 @@ abstract class AppDatabase : RoomDatabase() {
                     title = "服务器测试视频1",
                     videoUrl = NetworkConfig.getVideoUrl("v1.mp4"),
                     coverUrl = NetworkConfig.getDefaultCoverUrl("v1"),
-                    authorId = "user1",  // ✅ 永久绑定到 user1
-                    authorName = "user1",  // 用户名（不带@前缀）
+                    authorId = "user1",  // 绑定到 user1
+                    authorName = "user1",  // 用户名
                     authorAvatarUrl = NetworkConfig.getDefaultAvatarUrl("user1"),
                     description = "这是来自Tomcat服务器的第一个测试视频 #服务器测试 #视频1",
-                    likeCount = (0..100).random(),
-                    commentCount = (0..50).random()
+                    likeCount = (0..100).random(),// 随机点赞数
+                    commentCount = (0..50).random()// 随机评论数
                 ),
                 VideoEntity(
                     id = "v2",
                     title = "服务器测试视频2",
                     videoUrl = NetworkConfig.getVideoUrl("v2.mp4"),
                     coverUrl = NetworkConfig.getDefaultCoverUrl("v2"),
-                    authorId = "user2",  // ✅ 永久绑定到 user2
+                    authorId = "user2",  //  绑定到 user2
                     authorName = "user2",
                     authorAvatarUrl = NetworkConfig.getDefaultAvatarUrl("user2"),
                     description = "Tomcat服务器稳定运行中 #服务器测试 #视频2",
@@ -200,7 +200,7 @@ abstract class AppDatabase : RoomDatabase() {
                     title = "创意视频 A",
                     videoUrl = NetworkConfig.getVideoUrl("v3.mp4"),
                     coverUrl = NetworkConfig.getDefaultCoverUrl("v3"),
-                    authorId = "admin",  // ✅ 永久绑定到 admin
+                    authorId = "admin",  // 绑定到 admin
                     authorName = "admin",
                     authorAvatarUrl = NetworkConfig.getDefaultAvatarUrl("admin"),
                     description = "创意工坊出品 - 精彩内容A #创意 #原创",
@@ -212,7 +212,7 @@ abstract class AppDatabase : RoomDatabase() {
                     title = "创意视频 B",
                     videoUrl = NetworkConfig.getVideoUrl("v4.mp4"),
                     coverUrl = NetworkConfig.getDefaultCoverUrl("v4"),
-                    authorId = "123456",  // ✅ 永久绑定到 123456
+                    authorId = "123456",  //  永久绑定到 123456
                     authorName = "123456",
                     authorAvatarUrl = NetworkConfig.getDefaultAvatarUrl("123456"),
                     description = "创意工坊出品 - 精彩内容B #创意 #设计",
@@ -224,7 +224,7 @@ abstract class AppDatabase : RoomDatabase() {
                     title = "个人作品",
                     videoUrl = NetworkConfig.getVideoUrl("v5.mp4"),
                     coverUrl = NetworkConfig.getDefaultCoverUrl("v5"),
-                    authorId = "user1",  // ✅ 永久绑定到 user1（循环）
+                    authorId = "user1",  // 绑定到 user1
                     authorName = "user1",
                     authorAvatarUrl = NetworkConfig.getDefaultAvatarUrl("user1"),
                     description = "这是我的第一个作品，请多多支持 #我的作品 #原创",
@@ -235,11 +235,11 @@ abstract class AppDatabase : RoomDatabase() {
 
             videos.forEach { video ->
                 videoDao.insertVideo(video)
-                Log.d(TAG, "populateDatabase: 插入视频 - ${video.title} (${video.id})")
-                Log.d(TAG, "  -> authorId: \"${video.authorId}\"（已永久绑定）")
+//                Log.d(TAG, "populateDatabase: 插入视频 - ${video.title} (${video.id})")
+//                Log.d(TAG, "  -> authorId: \"${video.authorId}\"（已永久绑定）")
             }
 
-            Log.d(TAG, "populateDatabase: ✅ 数据预填充完成！")
+            Log.d(TAG, "populateDatabase: 数据预填充完成！")
             Log.d(TAG, "  -> 插入了 ${videos.size} 个视频（已绑定到 ${knownUsers.joinToString(", ")}）")
         }
 

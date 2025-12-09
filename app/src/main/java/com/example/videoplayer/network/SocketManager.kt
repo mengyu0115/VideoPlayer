@@ -46,11 +46,11 @@ object SocketManager {
     private var isConnected = false
     private var receiveJob: Job? = null
 
-    // ✅ 消息流（SharedFlow）
+    // 消息流（SharedFlow）
     private val _messageFlow = MutableSharedFlow<MessageEntity>(replay = 0)
     val messageFlow: SharedFlow<MessageEntity> = _messageFlow.asSharedFlow()
 
-    // ✅ 连接状态流
+    //  连接状态流
     private val _connectionStateFlow = MutableSharedFlow<ConnectionState>(replay = 1)
     val connectionStateFlow: SharedFlow<ConnectionState> = _connectionStateFlow.asSharedFlow()
 
@@ -75,9 +75,9 @@ object SocketManager {
 
             isConnected = true
             _connectionStateFlow.emit(ConnectionState.CONNECTED)
-            Log.d(TAG, "connect: ✅ Socket 连接成功")
+            Log.d(TAG, "connect:  Socket 连接成功")
 
-            // ✅ 严格握手：立即发送 LOGIN 包
+            // 严格握手：立即发送 LOGIN 包
             val loginJson = JSONObject().apply {
                 put("type", "LOGIN")
                 put("uid", userId)
@@ -96,24 +96,24 @@ object SocketManager {
 
                 if (code == 200) {
                     currentUserId = userId
-                    Log.d(TAG, "connect: ✅ 登录成功: $userId")
+                    Log.d(TAG, "connect: 登录成功: $userId")
 
                     // 启动消息接收循环
                     startReceivingMessages()
                     return@withContext true
                 } else {
-                    Log.e(TAG, "connect: ❌ 登录失败: $msg")
+                    Log.e(TAG, "connect:  登录失败: $msg")
                     disconnect()
                     return@withContext false
                 }
             } else {
-                Log.e(TAG, "connect: ❌ 未收到登录响应")
+                Log.e(TAG, "connect:  未收到登录响应")
                 disconnect()
                 return@withContext false
             }
 
         } catch (e: Exception) {
-            Log.e(TAG, "connect: ❌ 连接失败", e)
+            Log.e(TAG, "connect: 连接失败", e)
             _connectionStateFlow.emit(ConnectionState.DISCONNECTED)
             disconnect()
             return@withContext false
@@ -143,23 +143,23 @@ object SocketManager {
                 }
 
                 sendRaw(messageJson.toString())
-                Log.d(TAG, "send: ✅ 消息已发送 -> $toUser: $content")
+                Log.d(TAG, "send: 消息已发送 -> $toUser: $content")
 
             } catch (e: Exception) {
-                Log.e(TAG, "send: ❌ 发送失败", e)
+                Log.e(TAG, "send: 发送失败", e)
             }
         }
     }
 
     /**
-     * ✅ 启动消息接收循环（协程）
+     *  启动消息接收循环（协程）
      */
     private fun startReceivingMessages() {
         receiveJob = CoroutineScope(Dispatchers.IO).launch {
             try {
                 Log.d(TAG, "startReceivingMessages: 开始接收消息...")
 
-                // ✅ while(true) 循环 readLine()
+                //  while(true) 循环 readLine()
                 while (isConnected && reader != null) {
                     val line = reader?.readLine()
 
@@ -173,7 +173,7 @@ object SocketManager {
                 }
 
             } catch (e: Exception) {
-                Log.e(TAG, "startReceivingMessages: ❌ 接收消息异常", e)
+                Log.e(TAG, "startReceivingMessages:  接收消息异常", e)
             } finally {
                 _connectionStateFlow.emit(ConnectionState.DISCONNECTED)
                 Log.d(TAG, "startReceivingMessages: 消息接收循环已退出")
@@ -198,7 +198,7 @@ object SocketManager {
 
                     Log.d(TAG, "handleReceivedMessage: 收到聊天消息 $from -> $to: $content")
 
-                    // ✅ 构造 MessageEntity 并发送到 Flow
+                    //  构造 MessageEntity 并发送到 Flow
                     val messageEntity = MessageEntity(
                         senderId = from,
                         receiverId = to,
@@ -216,7 +216,7 @@ object SocketManager {
                 }
 
                 "VIDEO_LIST" -> {
-                    // ✅ 处理视频列表响应（迭代15）
+                    //  处理视频列表响应（迭代15）
                     val videosArray = json.getJSONArray("videos")
                     val videoList = mutableListOf<JSONObject>()
                     for (i in 0 until videosArray.length()) {
@@ -232,7 +232,7 @@ object SocketManager {
             }
 
         } catch (e: Exception) {
-            Log.e(TAG, "handleReceivedMessage: ❌ 处理消息失败", e)
+            Log.e(TAG, "handleReceivedMessage:  处理消息失败", e)
         }
     }
 
@@ -258,9 +258,9 @@ object SocketManager {
             reader?.close()
             writer?.close()
             socket?.close()
-            Log.d(TAG, "disconnect: ✅ 连接已断开")
+            Log.d(TAG, "disconnect:  连接已断开")
         } catch (e: Exception) {
-            Log.e(TAG, "disconnect: ❌ 断开连接失败", e)
+            Log.e(TAG, "disconnect:  断开连接失败", e)
         }
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -282,13 +282,13 @@ object SocketManager {
                 sendRaw(pingJson.toString())
                 Log.d(TAG, "sendHeartbeat: PING sent")
             } catch (e: Exception) {
-                Log.e(TAG, "sendHeartbeat: ❌ 发送心跳失败", e)
+                Log.e(TAG, "sendHeartbeat:  发送心跳失败", e)
             }
         }
     }
 
     /**
-     * ✅ 发布视频到服务器（迭代15）
+     *  发布视频到服务器（迭代15）
      *
      * @param videoJson 视频JSON对象
      */
@@ -311,16 +311,16 @@ object SocketManager {
                 }
 
                 sendRaw(publishMessage.toString())
-                Log.d(TAG, "publishVideo: ✅ 视频已发布到服务器: ${videoJson.getString("id")}")
+                Log.d(TAG, "publishVideo:  视频已发布到服务器: ${videoJson.getString("id")}")
 
             } catch (e: Exception) {
-                Log.e(TAG, "publishVideo: ❌ 发布失败", e)
+                Log.e(TAG, "publishVideo:  发布失败", e)
             }
         }
     }
 
     /**
-     * ✅ 从服务器获取视频列表（迭代15）
+     * 从服务器获取视频列表（迭代15）
      *
      * @param callback 回调函数，返回视频JSON列表
      */
@@ -339,18 +339,21 @@ object SocketManager {
             Log.d(TAG, "getVideos: 已发送GET_VIDEOS请求，等待响应...")
 
             // 简化处理：等待一段时间让视频列表通过messageFlow返回
-            // 实际应该使用更复杂的回调机制
+            /**
+             * TODO: 获取视频列表
+             */
+
             delay(500)
             return@withContext emptyList()
 
         } catch (e: Exception) {
-            Log.e(TAG, "getVideos: ❌ 获取失败", e)
+            Log.e(TAG, "getVideos:  获取失败", e)
             return@withContext emptyList()
         }
     }
 
     /**
-     * ✅ 视频列表流（用于接收VIDEO_LIST响应）
+     *  视频列表流（用于接收VIDEO_LIST响应）
      */
     private val _videoListFlow = MutableSharedFlow<List<JSONObject>>(replay = 0)
     val videoListFlow: SharedFlow<List<JSONObject>> = _videoListFlow.asSharedFlow()

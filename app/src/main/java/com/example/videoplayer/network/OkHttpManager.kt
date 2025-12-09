@@ -73,7 +73,7 @@ object OkHttpManager {
             .followRedirects(true)          // 自动跟随重定向
             .build()
 
-        Log.d(TAG, "initialize: ✅ OkHttpClient 已创建")
+        Log.d(TAG, "initialize:  OkHttpClient 已创建")
         Log.d(TAG, "initialize: 支持协议 = ${okHttpClient!!.protocols}")
 
         // 创建 OkHttpDataSource.Factory
@@ -90,14 +90,14 @@ object OkHttpManager {
         Log.d(TAG, "buildOkHttpDataSourceFactory: 开始构建 OkHttpDataSource.Factory")
 
         val client = okHttpClient ?: run {
-            Log.e(TAG, "buildOkHttpDataSourceFactory: ❌ OkHttpClient 为空，无法构建")
+            Log.e(TAG, "buildOkHttpDataSourceFactory:  OkHttpClient 为空，无法构建")
             return
         }
 
         okHttpDataSourceFactory = OkHttpDataSource.Factory(client)
             .setUserAgent("VideoPlayer/1.0")
 
-        Log.d(TAG, "buildOkHttpDataSourceFactory: ✅ OkHttpDataSource.Factory 已创建")
+        Log.d(TAG, "buildOkHttpDataSourceFactory:  OkHttpDataSource.Factory 已创建")
         Log.d(TAG, "buildOkHttpDataSourceFactory: User-Agent = VideoPlayer/1.0")
     }
 
@@ -108,7 +108,7 @@ object OkHttpManager {
     fun getOkHttpDataSourceFactory(): OkHttpDataSource.Factory {
         val factory = okHttpDataSourceFactory
         if (factory == null) {
-            Log.e(TAG, "getOkHttpDataSourceFactory: ❌ Factory 未初始化，请先调用 initialize()")
+            Log.e(TAG, "getOkHttpDataSourceFactory:  Factory 未初始化，请先调用 initialize()")
             throw IllegalStateException("OkHttpManager 未初始化，请在 Application.onCreate() 中调用 initialize()")
         }
         return factory
@@ -121,7 +121,7 @@ object OkHttpManager {
     fun getOkHttpClient(): OkHttpClient {
         val client = okHttpClient
         if (client == null) {
-            Log.e(TAG, "getOkHttpClient: ❌ Client 未初始化，请先调用 initialize()")
+            Log.e(TAG, "getOkHttpClient:  Client 未初始化，请先调用 initialize()")
             throw IllegalStateException("OkHttpManager 未初始化")
         }
         return client

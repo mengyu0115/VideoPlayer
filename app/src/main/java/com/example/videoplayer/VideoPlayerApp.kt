@@ -28,7 +28,7 @@ class VideoPlayerApp : Application() {
             private set
     }
 
-    // ✅ 应用级协程作用域
+    //  应用级协程作用域
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     override fun onCreate() {
@@ -40,12 +40,12 @@ class VideoPlayerApp : Application() {
         // 初始化数据库
         database = AppDatabase.getInstance(this)
 
-        // ✅ 启动全局消息监听器
+        //  启动全局消息监听器
         startGlobalMessageListener()
     }
 
     /**
-     * ✅ 全局消息监听器（迭代15）
+     * 全局消息监听器（迭代15）
      *
      * 解决问题：
      * - ChatViewModel 只在 ChatActivity 中存在，用户没有打开聊天页面时消息不会被保存
@@ -63,13 +63,13 @@ class VideoPlayerApp : Application() {
 
                     // 保存到数据库
                     database.messageDao().insertMessage(message)
-                    Log.d(TAG, "✅ 消息已保存到数据库")
+                    Log.d(TAG, "消息已保存到数据库")
 
                     // 自动添加发送者到联系人列表
                     val repository = VideoRepository(this@VideoPlayerApp)
                     val addedCount = repository.autoAddMessageSendersToContacts()
                     if (addedCount > 0) {
-                        Log.d(TAG, "✅ 已自动添加 $addedCount 个新联系人")
+                        Log.d(TAG, " 已自动添加 $addedCount 个新联系人")
                     }
                 }
             } catch (e: Exception) {

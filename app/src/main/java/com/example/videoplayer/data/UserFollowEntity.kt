@@ -18,18 +18,16 @@ import androidx.room.Entity
     primaryKeys = ["followerId", "followedId"]
 )
 data class UserFollowEntity(
-    /**
-     * 粉丝ID - 谁关注的（我）
-     */
+
+//     粉丝ID - 谁关注的（我）
+
     val followerId: String,
 
-    /**
-     * 被关注者ID - 关注了谁（对方）
-     */
+
+//     被关注者ID - 关注了谁（对方）
     val followedId: String,
 
-    /**
-     * 关注时间戳
-     */
+
+//     关注时间戳
     val timestamp: Long = System.currentTimeMillis()
 )

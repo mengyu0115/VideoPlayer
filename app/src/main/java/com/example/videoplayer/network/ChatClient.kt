@@ -35,7 +35,7 @@ object ChatClient {
     private var reader: BufferedReader? = null
     private var isConnected = false
 
-    // ✅ Bug修复：添加 VideoRepository 用于自动添加消息发送者到联系人
+    //  Bug修复：添加 VideoRepository 用于自动添加消息发送者到联系人
     private var repository: VideoRepository? = null
 
     var currentUsername: String? = null
@@ -67,7 +67,7 @@ object ChatClient {
             try {
                 Log.d(TAG, "connect: 开始连接服务器 $serverIp:$PORT")
 
-                // ✅ Bug修复：初始化 VideoRepository
+                //  Bug修复：初始化 VideoRepository
                 repository = VideoRepository(VideoPlayerApp.instance)
 
                 // 创建 Socket 连接
@@ -99,19 +99,19 @@ object ChatClient {
                     if (code == 200) {
                         currentUsername = username
 
-                        // ✅ Bug修复：保存当前登录用户ID到SessionManager
+                        //  Bug修复：保存当前登录用户ID到SessionManager
                         SessionManager.getInstance(VideoPlayerApp.instance).setCurrentUserId(username)
 
-                        Log.d(TAG, "connect: ✅ 登录成功: $username")
+                        Log.d(TAG, "connect:  登录成功: $username")
                         callback(true, msg)
 
                         // 启动消息接收线程
                         startReceivingMessages()
 
-                        // ✅ Bug修复：登录成功后，自动添加消息发送者到联系人列表
+                        //  Bug修复：登录成功后，自动添加消息发送者到联系人列表
                         autoAddMessageSendersToContacts()
                     } else {
-                        Log.e(TAG, "connect: ❌ 登录失败: $msg")
+                        Log.e(TAG, "connect:  登录失败: $msg")
                         disconnect()
                         callback(false, msg)
                     }
@@ -236,9 +236,9 @@ object ChatClient {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 VideoPlayerApp.database.messageDao().insertMessage(message)
-                Log.d(TAG, "saveMessageToDatabase: ✅ 消息已存入数据库")
+                Log.d(TAG, "saveMessageToDatabase:  消息已存入数据库")
 
-                // ✅ Bug修复：收到新消息后，自动添加发送者到联系人列表
+                //  Bug修复：收到新消息后，自动添加发送者到联系人列表
                 autoAddMessageSendersToContacts()
             } catch (e: Exception) {
                 Log.e(TAG, "saveMessageToDatabase: 存储失败", e)
@@ -258,10 +258,10 @@ object ChatClient {
             try {
                 val addedCount = repository?.autoAddMessageSendersToContacts() ?: 0
                 if (addedCount > 0) {
-                    Log.d(TAG, "autoAddMessageSendersToContacts: ✅ 自动添加了 $addedCount 个新联系人")
+                    Log.d(TAG, "autoAddMessageSendersToContacts:  自动添加了 $addedCount 个新联系人")
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "autoAddMessageSendersToContacts: ❌ 自动添加联系人失败", e)
+                Log.e(TAG, "autoAddMessageSendersToContacts:  自动添加联系人失败", e)
             }
         }
     }

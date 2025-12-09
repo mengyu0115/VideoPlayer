@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: VideoViewModel by viewModels()
     private lateinit var viewPagerAdapter: ViewPagerAdapter
 
-    // ✅ 迭代15：视频同步标志，防止重复同步
+    // 迭代15：视频同步标志，防止重复同步
     private var hasSyncedVideos = false
 
     // 迭代12：媒体选择器
@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate: Activity 开始创建")
+//        Log.d(TAG, "onCreate: Activity 开始创建")
 
         // 设置沉浸式 UI
         setupImmersiveUI()
@@ -91,21 +91,21 @@ class MainActivity : AppCompatActivity() {
         setupBottomNavigation()
         setupPublishButton()  // 迭代12：配置发布按钮
 
-        Log.d(TAG, "onCreate: Activity 创建完成")
+//        Log.d(TAG, "onCreate: Activity 创建完成")
     }
 
     /**
      * 配置 ViewPager2
      */
     private fun setupViewPager() {
-        Log.d(TAG, "setupViewPager: 配置 ViewPager2")
+//        Log.d(TAG, "setupViewPager: 配置 ViewPager2")
 
         viewPagerAdapter = ViewPagerAdapter(this)
         binding.viewPager.adapter = viewPagerAdapter
 
         // 禁止用户手指滑动切换页面（只能通过底部导航切换）
         binding.viewPager.isUserInputEnabled = false
-        Log.d(TAG, "setupViewPager: 已禁用 ViewPager2 的滑动切换")
+//        Log.d(TAG, "setupViewPager: 已禁用 ViewPager2 的滑动切换")
 
         // 监听页面切换事件
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        Log.d(TAG, "setupViewPager: ViewPager2 配置完成")
+//        Log.d(TAG, "setupViewPager: ViewPager2 配置完成")
     }
 
     /**
@@ -159,14 +159,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        Log.d(TAG, "onStart: Activity 可见")
+//        Log.d(TAG, "onStart: Activity 可见")
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "onResume: Activity 获得焦点")
+//        Log.d(TAG, "onResume: Activity 获得焦点")
 
-        // ✅ 迭代15：首次恢复时同步服务器视频
+        //  迭代15：首次恢复时同步服务器视频
         if (!hasSyncedVideos) {
             lifecycleScope.launch {
                 try {
@@ -177,9 +177,9 @@ class MainActivity : AppCompatActivity() {
                     val repository = com.example.videoplayer.repository.VideoRepository(this@MainActivity)
                     repository.syncVideosFromServer()
                     hasSyncedVideos = true
-                    Log.d(TAG, "onResume: ✅ 视频同步完成")
+                    Log.d(TAG, "onResume:  视频同步完成")
                 } catch (e: Exception) {
-                    Log.e(TAG, "onResume: ⚠️ 视频同步失败", e)
+                    Log.e(TAG, "onResume:  视频同步失败", e)
                 }
             }
         }
@@ -187,17 +187,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        Log.d(TAG, "onPause: Activity 失去焦点")
+//        Log.d(TAG, "onPause: Activity 失去焦点")
     }
 
     override fun onStop() {
         super.onStop()
-        Log.d(TAG, "onStop: Activity 不可见")
+//        Log.d(TAG, "onStop: Activity 不可见")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "onDestroy: Activity 销毁")
+//        Log.d(TAG, "onDestroy: Activity 销毁")
     }
 
     // ========== 迭代12：视频发布功能 ==========
@@ -314,11 +314,11 @@ class MainActivity : AppCompatActivity() {
 
                 if (response.isSuccessful && response.body()?.status == "success") {
                     val videoUrl = response.body()?.url
-                    Log.d(TAG, "uploadAndPublishVideo: ✅ 上传成功 URL=$videoUrl")
+                    Log.d(TAG, "uploadAndPublishVideo: 上传成功 URL=$videoUrl")
 
                     // Step 4: 插入数据库
                     if (videoUrl != null) {
-                        // ✅ Bug修复：使用SessionManager获取当前登录用户ID
+                        //  Bug修复：使用SessionManager获取当前登录用户ID
                         val sessionManager = com.example.videoplayer.utils.SessionManager.getInstance(this@MainActivity)
                         val currentUserId = sessionManager.currentUserId
 
@@ -327,20 +327,20 @@ class MainActivity : AppCompatActivity() {
                             title = title,
                             videoUrl = videoUrl,
                             coverUrl = NetworkConfig.getDefaultCoverUrl("upload"),
-                            authorId = currentUserId,  // ✅ 使用真实登录的用户ID
-                            authorName = currentUserId,  // ✅ 使用真实用户名（不带@前缀）
+                            authorId = currentUserId,  //  使用真实登录的用户ID
+                            authorName = currentUserId,  //  使用真实用户名
                             authorAvatarUrl = NetworkConfig.getDefaultAvatarUrl(currentUserId),
                             description = description,
                             likeCount = 0,
                             commentCount = 0
-                            // ✅ 不需要设置 isMine/isLiked/isFavorite，Repository 会自动计算
+                            // 不需要设置 isMine/isLiked/isFavorite，Repository 会自动计算
                         )
 
                         withContext(Dispatchers.IO) {
                             AppDatabase.getInstance(this@MainActivity).videoDao().insertVideo(videoEntity)
                         }
 
-                        // ✅ Step 5: 发布视频到服务器（迭代15）
+                        // Step 5: 发布视频到服务器（迭代15）
                         try {
                             val videoJson = org.json.JSONObject().apply {
                                 put("id", videoEntity.id)
@@ -355,14 +355,14 @@ class MainActivity : AppCompatActivity() {
                                 put("commentCount", videoEntity.commentCount)
                             }
                             com.example.videoplayer.network.SocketManager.publishVideo(videoJson)
-                            Log.d(TAG, "uploadAndPublishVideo: ✅ 视频已发布到服务器")
+                            Log.d(TAG, "uploadAndPublishVideo:  视频已发布到服务器")
                         } catch (e: Exception) {
-                            Log.e(TAG, "uploadAndPublishVideo: ⚠️ 发布到服务器失败（本地已保存）", e)
+                            Log.e(TAG, "uploadAndPublishVideo: 发布到服务器失败（本地已保存）", e)
                         }
 
                         withContext(Dispatchers.Main) {
                             Toast.makeText(this@MainActivity, "发布成功！", Toast.LENGTH_SHORT).show()
-                            Log.d(TAG, "uploadAndPublishVideo: ✅ 视频已插入数据库")
+                            Log.d(TAG, "uploadAndPublishVideo:  视频已插入数据库")
 
                             // 切换到首页Tab，让用户看到新发布的视频
                             binding.viewPager.setCurrentItem(0, true)
@@ -370,7 +370,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 } else {
                     val errorMsg = response.body()?.message ?: "上传失败"
-                    Log.e(TAG, "uploadAndPublishVideo: ❌ 上传失败: $errorMsg")
+                    Log.e(TAG, "uploadAndPublishVideo: 上传失败: $errorMsg")
                     withContext(Dispatchers.Main) {
                         Toast.makeText(this@MainActivity, "上传失败: $errorMsg", Toast.LENGTH_LONG).show()
                     }
@@ -380,7 +380,7 @@ class MainActivity : AppCompatActivity() {
                 tempFile.delete()
 
             } catch (e: Exception) {
-                Log.e(TAG, "uploadAndPublishVideo: ❌ 上传异常", e)
+                Log.e(TAG, "uploadAndPublishVideo: 上传异常", e)
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@MainActivity, "上传失败: ${e.message}", Toast.LENGTH_LONG).show()
                 }
