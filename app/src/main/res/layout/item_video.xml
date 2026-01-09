@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <!-- Layer 0: 视频封面图（在滑动时可见，尺寸与视频完全匹配） -->
+    <ImageView
+        android:id="@+id/ivCover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/video_cover"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Layer 0.5: 视频播放器容器（黑色背景，遮挡封面直到视频播放） -->
+    <FrameLayout
+        android:id="@+id/videoContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Layer 1: 底部渐变阴影（让文字更清晰） -->
+    <View
+        android:id="@+id/bottomGradient"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@drawable/gradient_bottom_shadow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Layer 2: 左下角信息区 -->
+    <LinearLayout
+        android:id="@+id/bottomInfoLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/rightActionBar"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- 用户昵称 -->
+        <TextView
+            android:id="@+id/tvUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:shadowColor="#80000000"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            tools:text="@小红薯" />
+
+        <!-- 视频描述 -->
+        <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:maxLines="3"
+            android:ellipsize="end"
+            android:shadowColor="#80000000"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            tools:text="这是一个非常有趣的短视频，分享给大家看看！#生活记录 #日常分享" />
+    </LinearLayout>
+
+    <!-- Layer 2: 右侧操作栏 -->
+    <LinearLayout
+        android:id="@+id/rightActionBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="80dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- 用户头像 -->
+        <FrameLayout
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="24dp">
+
+            <ImageView
+                android:id="@+id/ivUserAvatar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/user_avatar"
+                tools:src="@android:drawable/ic_menu_gallery" />
+
+            <!-- 关注按钮（小加号） -->
+            <ImageView
+                android:id="@+id/ivFollow"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:src="@android:drawable/ic_input_add"
+                android:background="@drawable/circle_bg_red"
+                android:padding="2dp"
+                android:contentDescription="@string/follow" />
+        </FrameLayout>
+
+        <!-- 点赞按钮 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:id="@+id/ivLike"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_heart"
+                android:tint="@color/selector_like_tint"
+                android:padding="8dp"
+                android:contentDescription="@string/like" />
+
+            <TextView
+                android:id="@+id/tvLikeCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:shadowColor="#80000000"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                tools:text="1.2w" />
+        </LinearLayout>
+
+        <!-- 评论按钮 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:id="@+id/ivComment"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_comment"
+                android:padding="8dp"
+                android:contentDescription="@string/comment" />
+
+            <TextView
+                android:id="@+id/tvCommentCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:shadowColor="#80000000"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                tools:text="888" />
+        </LinearLayout>
+
+        <!-- 收藏按钮 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:id="@+id/ivFavorite"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@android:drawable/btn_star_big_on"
+                android:tint="@color/selector_favorite_tint"
+                android:padding="8dp"
+                android:contentDescription="@string/favorite" />
+
+            <TextView
+                android:id="@+id/tvFavoriteText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:text="@string/favorite"
+                android:shadowColor="#80000000"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

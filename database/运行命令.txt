@@ -1,0 +1,81 @@
+# MySQL版服务器运行命令
+
+## ⚠️ 重要：需要同时包含 MySQL 和 JSON 两个 JAR 包
+
+### 1. 编译命令（Windows）
+javac -cp ".;mysql-connector-j-9.5.0.jar;json-20240303.jar" -encoding UTF-8 DatabaseManager.java RobustChatServer_MySQL.java
+
+### 2. 测试数据库连接
+java -cp ".;mysql-connector-j-9.5.0.jar;json-20240303.jar" DatabaseManager
+
+### 3. 启动服务器（正确命令）✅
+java -cp ".;mysql-connector-j-9.5.0.jar;json-20240303.jar" RobustChatServer_MySQL
+
+### 4. Linux/Mac 系统（用冒号 : 代替分号 ;）
+javac -cp ".:mysql-connector-j-9.5.0.jar:json-20240303.jar" -encoding UTF-8 DatabaseManager.java RobustChatServer_MySQL.java
+java -cp ".:mysql-connector-j-9.5.0.jar:json-20240303.jar" RobustChatServer_MySQL
+
+---
+
+## 支持的功能 ✅
+
+### 1. 用户注册（支持两种格式）
+- 旧格式（客户端使用）：`REGISTER:username:password`
+- JSON格式：`{"type":"REGISTER","user":"xxx","pass":"xxx"}`
+
+### 2. 用户登录
+- JSON格式：`{"type":"LOGIN","user":"xxx","pass":"xxx"}`
+
+### 3. 聊天消息
+- `{"type":"MSG","to":"user2","content":"hello","time":123456789}`
+
+### 4. 视频发布
+- `{"type":"PUBLISH_VIDEO","id":"...","title":"...","videoUrl":"...",...}`
+
+### 5. 获取视频列表
+- `{"type":"GET_VIDEOS"}`
+
+### 6. 心跳包
+- `{"type":"PING"}`
+
+---
+
+## 常见错误
+
+❌ 错误1：缺少 json JAR
+java -cp ".;mysql-connector-j-9.5.0.jar" RobustChatServer_MySQL
+
+错误信息：
+Exception in thread "Thread-1" java.lang.NoClassDefFoundError: org/json/JSONObject
+Caused by: java.lang.ClassNotFoundException: org.json.JSONObject
+
+✅ 正确命令（包含两个 JAR）：
+java -cp ".;mysql-connector-j-9.5.0.jar;json-20240303.jar" RobustChatServer_MySQL
+
+---
+
+❌ 错误2：不支持注册
+[Login] 收到登录包: REGISTER:user4:123456
+[Error] 客户端处理异常: A JSONObject text must begin with '{' at 1
+
+✅ 已修复：现在支持旧格式 REGISTER:user:pass
+
+---
+
+## 必需的 JAR 包
+
+1. mysql-connector-j-9.5.0.jar  - MySQL 数据库驱动
+2. json-20240303.jar           - JSON 解析库
+
+下载 JSON 库：
+curl -L -o json-20240303.jar "https://repo1.maven.org/maven2/org/json/json/20240303/json-20240303.jar"
+
+---
+
+## 最新修复（v1.1）
+
+✅ 支持客户端旧格式注册：`REGISTER:username:password`
+✅ 支持 JSON 格式注册：`{"type":"REGISTER","user":"...","pass":"..."}`
+✅ 注册成功返回：`REGISTER_SUCCESS`
+✅ 注册失败返回：`REGISTER_FAILED`（用户已存在或其他错误）
+✅ 自动记录注册日志到 operation_logs 表

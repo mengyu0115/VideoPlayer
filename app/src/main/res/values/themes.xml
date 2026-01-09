@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.VideoPlayer" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- 使用全屏主题 -->
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+    </style>
+
+    <!-- 圆形图片样式 -->
+    <style name="CircleImageStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+</resources>

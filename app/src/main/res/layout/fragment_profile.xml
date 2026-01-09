@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5">
+
+    <!-- 蓝色头部区域 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutHeader"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:background="#1E88E5"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- 用户头像 -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivAvatar"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/CircleImageStyle"
+            app:strokeColor="#FFFFFF"
+            app:strokeWidth="2dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.3" />
+
+        <!-- 用户名 -->
+        <TextView
+            android:id="@+id/tvUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="用户名"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/ivAvatar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- 用户ID显示 -->
+        <TextView
+            android:id="@+id/tvUserId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="用户ID: ME"
+            android:textSize="12sp"
+            android:textColor="#DCEFFE"
+            android:layout_marginTop="4dp"
+            app:layout_constraintTop_toBottomOf="@id/tvUserName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- TabLayout -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="#FFFFFF"
+        app:tabTextColor="#666666"
+        app:tabSelectedTextColor="#1E88E5"
+        app:tabIndicatorColor="#1E88E5"
+        app:tabIndicatorHeight="3dp"
+        app:tabMode="fixed"
+        app:layout_constraintTop_toBottomOf="@id/layoutHeader" />
+
+    <!-- ViewPager2 -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/tabLayout"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

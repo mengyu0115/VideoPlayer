@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">VideoPlayer</string>
+    <string name="video_cover">Video Cover</string>
+    <string name="user_avatar">User Avatar</string>
+    <string name="follow">Follow</string>
+    <string name="like">Like</string>
+    <string name="comment">Comment</string>
+    <string name="share">Share</string>
+    <string name="favorite">收藏</string>
+    <string name="publish_video">发布视频</string>
+    <string name="back">返回</string>
+</resources>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@android:color/white">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="发布视频"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="16dp" />
+
+    <!-- 标题输入框 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="视频标题"
+        android:textSize="14sp"
+        android:textColor="#666666"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/etTitle"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="#F5F5F5"
+        android:hint="请输入标题"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:textSize="15sp"
+        android:maxLines="1"
+        android:inputType="text" />
+
+    <!-- 描述输入框 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="视频描述"
+        android:textSize="14sp"
+        android:textColor="#666666"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/etDescription"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="#F5F5F5"
+        android:hint="请输入描述"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:textSize="15sp"
+        android:minLines="3"
+        android:maxLines="5"
+        android:gravity="top"
+        android:inputType="textMultiLine" />
+
+    <!-- 按钮区域 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="24dp"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="取消"
+            android:textColor="#666666"
+            android:background="?android:attr/selectableItemBackground"
+            android:minWidth="80dp"
+            style="?android:attr/buttonBarButtonStyle" />
+
+        <Button
+            android:id="@+id/btnPublish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="发布"
+            android:textColor="#FFFFFF"
+            android:background="#1E88E5"
+            android:layout_marginStart="8dp"
+            android:minWidth="80dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
